@@ -1,0 +1,174 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, system-ui, sans-serif;
+  color: #182b26;
+  background: #f4f6f0;
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.page {
+  width: min(70rem, 100% - 2rem);
+  margin: 0 auto;
+  padding: clamp(2rem, 7vw, 5rem) 0;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  margin-bottom: 1.5rem;
+  font-size: clamp(2.25rem, 6vw, 4.25rem);
+  letter-spacing: -0.06em;
+  line-height: 1.1;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 650;
+}
+
+input,
+button {
+  font: inherit;
+}
+
+.search {
+  width: min(100%, 34rem);
+  padding: 0.85rem 1rem;
+  border: 1px solid #8c9c93;
+  border-radius: 0.65rem;
+  background: #fff;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid #21755c;
+  outline-offset: 3px;
+}
+
+.status:not(:empty) {
+  margin: 1rem 0;
+}
+
+.status[data-state="error"] {
+  color: #a12c25;
+}
+
+.results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.card,
+.details {
+  border: 1px solid #cdd8cf;
+  border-radius: 1rem;
+  background: #fff;
+}
+
+.card {
+  position: relative;
+  padding: 1.25rem;
+}
+
+.card:hover {
+  border-color: #21755c;
+}
+
+.flag {
+  display: inline-grid;
+  position: relative;
+  place-items: center;
+  width: 3.75rem;
+  height: 2.5rem;
+  overflow: hidden;
+  border-radius: 0.3rem;
+  background: #edf2ed;
+  font-size: 1.75rem;
+}
+
+.flag img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #edf2ed;
+}
+
+.country-link {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #14533f;
+  font-weight: 700;
+  text-align: start;
+  cursor: pointer;
+}
+
+.country-link::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+}
+
+.facts {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.75rem 0 0;
+  font-size: 0.9rem;
+}
+
+.facts div {
+  display: grid;
+  grid-template-columns: 6rem 1fr;
+  gap: 0.5rem;
+}
+
+dt,
+.description {
+  color: #52655c;
+}
+
+dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.action {
+  padding: 0.5rem 0.9rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: #14533f;
+  color: #fff;
+  cursor: pointer;
+}
+
+.details {
+  width: min(30rem, 100% - 2rem);
+  max-height: calc(100% - 2rem);
+  padding: 1.5rem;
+  color: inherit;
+}
+
+.details::backdrop {
+  background: rgb(14 28 23 / 55%);
+}
+
+.close {
+  float: right;
+}
