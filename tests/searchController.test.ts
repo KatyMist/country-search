@@ -155,3 +155,66 @@ describe("createSearchController", () => {
     });
   });
 });
+
+it("keeps the latest result when the earlier response arrives later", async () => {
+  const { setQuery, onState } = setup();
+  const responseOrder: string[] = [];
+  const rejectOnAbort = vi.fn();
+
+  function mockResponse(
+    country: string,
+    latency: number,
+    signal?: AbortSignal | null,
+  ) {
+    return new Promise<Response>((resolve, reject) => {
+      function abort() {
+        rejectOnAbort(signal?.reason);
+        reject(signal?.reason);
+      }
+
+      if (signal?.aborted) abort();
+      else signal?.addEventListener("abort", abort, { once: true });
+
+      setTimeout(() => {
+        signal?.removeEventListener("abort", abort);
+        responseOrder.push(country);
+        resolve(Response.json([{ name: country }]));
+      }, latency);
+    });
+  }
+
+  fetchMock
+    .mockImplementationOnce((_url, options) =>
+      mockResponse("Sweden", 1_000, options?.signal),
+    )
+    .mockImplementationOnce((_url, options) =>
+      mockResponse("Spain", 100, options?.signal),
+    );
+
+  setQuery("sw");
+  await vi.advanceTimersByTimeAsync(delay);
+  expect(fetchMock).toHaveBeenCalledTimes(1);
+
+  setQuery("spain");
+  expect(rejectOnAbort).toHaveBeenCalledExactlyOnceWith(
+    expect.objectContaining({ name: "AbortError" }),
+  );
+
+  await vi.advanceTimersByTimeAsync(delay + 100);
+  expect(responseOrder).toEqual(["Spain"]);
+
+  await vi.advanceTimersByTimeAsync(600);
+  expect(responseOrder).toEqual(["Spain", "Sweden"]);
+  expect(fetchMock).toHaveBeenCalledTimes(2);
+  expect(onState.mock.calls.map(([state]) => state.status)).toEqual([
+    "waiting",
+    "loading",
+    "waiting",
+    "loading",
+    "results",
+  ]);
+  expect(onState).toHaveBeenLastCalledWith({
+    status: "results",
+    countries: [expect.objectContaining({ name: "Spain" })],
+  });
+});
